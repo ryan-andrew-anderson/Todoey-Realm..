@@ -11,25 +11,31 @@ import UIKit
 class TodoListViewController: UITableViewController {
     
     
-    let itemArray = [
+    var itemArray = [
         "Find Mike", "Buy Eggos", "Destory Demogorgon"
     ]
+    
+    let defaults = UserDefaults.standard
 
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
+        if let items = defaults.array(forKey: "TodolistArray") as? [String] {
+            itemArray = items
+        }
     }
     
     //MARK: - TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
+        
         if #available(iOS 14.0, *) {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
             var content = cell.defaultContentConfiguration()
             
             content.text = itemArray[indexPath.row]
+
             cell.contentConfiguration = content
             return cell
         } else {
@@ -63,10 +69,14 @@ class TodoListViewController: UITableViewController {
 
         var textfield = UITextField()
         
-        let alert = UIAlertController(title: "Add New Todey Item", message: nil , preferredStyle: .alert)
+        let alert = UIAlertController(title: "Add New Todey Item", message: "" , preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) { action in
 //            what will once the user clicks the Add item button on our alert
-            print(textfield.text)
+            self.itemArray.append(textfield.text!)
+            
+            self.defaults.set(self.itemArray, forKey: "TodolistArray")
+            
+            self.tableView.reloadData()
         }
         
         alert.addTextField { alertTextField in
