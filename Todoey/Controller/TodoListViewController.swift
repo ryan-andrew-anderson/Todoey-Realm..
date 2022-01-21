@@ -15,45 +15,51 @@ class TodoListViewController: UITableViewController {
     
     
     let defaults = UserDefaults.standard
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
-//        if let items = defaults.array(forKey: "TodolistArray") as? [String] {
-//            itemArray = items
-//    }
+      
         let newItem = Item()
         newItem.title = "Find Mike"
         itemArray.append(newItem)
         
         let newItem2 = Item()
-        newItem.title = "Buy Eggos"
-        itemArray.append(newItem)
+        newItem2.title = "Buy Eggos"
+        itemArray.append(newItem2)
         
         let newItem3 = Item()
-        newItem.title = "Destory Demogorgon"
-        itemArray.append(newItem)
+        newItem3.title = "Destory Demogorgon"
+        itemArray.append(newItem3)
         
+        if let items = defaults.array(forKey: "TodolistArray") as? [Item] {
+            itemArray = items
+          }
     }
     
     //MARK: - TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let item = itemArray[indexPath.row]
         
         if #available(iOS 14.0, *) {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
             var content = cell.defaultContentConfiguration()
             
-            content.text = itemArray[indexPath.row].title
-
+            content.text = item.title
+            
+            cell.accessoryType = item.done == true ? .checkmark : .none
+            
             cell.contentConfiguration = content
+            
             return cell
         } else {
             // Fallback on earlier versions
             let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath) as! ItemTableViewCell
             
-            cell.itemLabel.text = itemArray[indexPath.row].title
+            cell.itemLabel.text = item.title
+            
             return cell
         }
     }
@@ -64,25 +70,22 @@ class TodoListViewController: UITableViewController {
     //MARK: - TableView Delegate Methods
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        print(itemArray[indexPath.row])
-        if tableView.cellForRow(at: indexPath)?.accessoryType == UITableViewCell.AccessoryType.none {
-        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        } else  {
-            tableView.cellForRow(at: indexPath)?.accessoryType = .none
-        }
+        //        print(itemArray[indexPath.row])
         
+        itemArray[indexPath.row].done.toggle()
         tableView.deselectRow(at: indexPath, animated: true)
+        tableView.reloadData()
     }
-
+    
     //MARK: - Add New Items
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
-
+        
         var textfield = UITextField()
         
         let alert = UIAlertController(title: "Add New Todey Item", message: "" , preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) { action in
-//            what will once the user clicks the Add item button on our alert
+            //            what will once the user clicks the Add item button on our alert
             
             let newItem = Item()
             newItem.title = textfield.text!
