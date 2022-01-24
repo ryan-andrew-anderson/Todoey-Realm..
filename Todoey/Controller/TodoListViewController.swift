@@ -12,16 +12,16 @@ class TodoListViewController: UITableViewController {
     
     
     var itemArray = [Item]()
-    
+//    tapping into userDefaults using constant "defaults"
 //    let defaults = UserDefaults.standard
     
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.Plist")
+//    This is for Saving Data using Filemanager onto a Plist
+//    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.Plist")
+    
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-
-        print(dataFilePath)
       
         loadItems()
 //        let newItem = Item()
@@ -36,6 +36,7 @@ class TodoListViewController: UITableViewController {
 //        newItem3.title = "Destory Demogorgon"
 //        itemArray.append(newItem3)
         
+//                    loading data using uderDefaults
 //        if let items = defaults.array(forKey: "TodolistArray") as? [Item] {
 //            itemArray = items
 //          }
@@ -92,12 +93,12 @@ class TodoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { action in
             //            what will once the user clicks the Add item button on our alert
             
-            let newItem = Item()
+            let newItem = Item(context: self.context)
             newItem.title = textfield.text!
             self.itemArray.append(newItem)
             self.saveItems()
             
-            
+//            saving using uderDefaults
 //            self.defaults.set(self.itemArray, forKey: "TodolistArray")
             self.tableView.reloadData()
         }
@@ -113,13 +114,17 @@ class TodoListViewController: UITableViewController {
     //MARK: - Model Manupulation Methods
     
     func saveItems() {
-        let encoder =  PropertyListEncoder()
+//        init() Encoder for saving with userDefaults
+//        let encoder =  PropertyListEncoder()
         
         do{
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+           try context.save()
+//            Saving encoding data to be saved into Plist
+//            let data = try encoder.encode(itemArray)
+//            try data.write(to: dataFilePath!)
         } catch {
-            print("Error encoding item array, \(error.localizedDescription)")
+            print("Error saving context \(error)")
+//            print("Error encoding item array, \(error.localizedDescription)")
         }
     }
     
