@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import CoreData
 
 class TodoListViewController: UITableViewController {
     
@@ -22,8 +23,10 @@ class TodoListViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-      
+        
         loadItems()
+      
+//        loadItems()
 //        let newItem = Item()
 //        newItem.title = "Find Mike"
 //        itemArray.append(newItem)
@@ -40,6 +43,7 @@ class TodoListViewController: UITableViewController {
 //        if let items = defaults.array(forKey: "TodolistArray") as? [Item] {
 //            itemArray = items
 //          }
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
     }
     
     //MARK: - TableView Datasource Methods
@@ -63,6 +67,7 @@ class TodoListViewController: UITableViewController {
             // Fallback on earlier versions
             let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath) as! ItemTableViewCell
             
+            cell.accessoryType = item.done == true ? .checkmark : .none
             cell.itemLabel.text = item.title
             
             return cell
@@ -95,6 +100,7 @@ class TodoListViewController: UITableViewController {
             
             let newItem = Item(context: self.context)
             newItem.title = textfield.text!
+            newItem.done = false
             self.itemArray.append(newItem)
             self.saveItems()
             
@@ -129,17 +135,25 @@ class TodoListViewController: UITableViewController {
     }
     
     func loadItems() {
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            let decoder = PropertyListDecoder()
-            do {
-            itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print("Error decoding from Plist\(error.localizedDescription)")
-            }
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        
+        do {
+            itemArray = try context.fetch(request)
+            print(itemArray)
+        } catch {
+            print("Error fetching data from context \(error)")
         }
-        
-        
-       
     }
+    
+//    func loadItems() {
+//        if let data = try? Data(contentsOf: dataFilePath!) {
+//            let decoder = PropertyListDecoder()
+//            do {
+//            itemArray = try decoder.decode([Item].self, from: data)
+//            } catch {
+//                print("Error decoding from Plist\(error.localizedDescription)")
+//            }
+//        }
+//    }
 }
 
