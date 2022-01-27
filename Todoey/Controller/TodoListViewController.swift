@@ -12,6 +12,8 @@ import CoreData
 class TodoListViewController: UITableViewController {
     
     
+    @IBOutlet weak var searchBar: UISearchBar!
+    
     var itemArray = [Item]()
 //    tapping into userDefaults using constant "defaults"
 //    let defaults = UserDefaults.standard
@@ -25,6 +27,8 @@ class TodoListViewController: UITableViewController {
         super.viewDidLoad()
         
         loadItems()
+        
+        searchBar.delegate = self
       
 //        loadItems()
 //        let newItem = Item()
@@ -74,6 +78,7 @@ class TodoListViewController: UITableViewController {
         }
     }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return itemArray.count
     }
     
@@ -83,9 +88,20 @@ class TodoListViewController: UITableViewController {
         //        print(itemArray[indexPath.row])
         
         itemArray[indexPath.row].done.toggle()
+//        itemArray.remove(at: indexPath.row)
+//        context.delete(itemArray[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
         saveItems()
         tableView.reloadData()
+    }
+    
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            
+            context.delete(itemArray[indexPath.row])
+            itemArray.remove(at: indexPath.row)
+            tableView.reloadData()
+        }
     }
     
     //MARK: - Add New Items
@@ -155,5 +171,13 @@ class TodoListViewController: UITableViewController {
 //            }
 //        }
 //    }
+}
+ //MARK: - SearchBar Methods
+extension TodoListViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        let predicate = NSPredicate(format: "title CONTAINS %@", searchBar.text!)
+    }
 }
 
