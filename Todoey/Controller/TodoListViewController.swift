@@ -77,6 +77,7 @@ class TodoListViewController: UITableViewController {
             return cell
         }
     }
+    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return itemArray.count
@@ -92,7 +93,6 @@ class TodoListViewController: UITableViewController {
         //        context.delete(itemArray[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
         saveItems()
-        tableView.reloadData()
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
@@ -108,28 +108,32 @@ class TodoListViewController: UITableViewController {
     
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
-        var textfield = UITextField()
+        var textField = UITextField()
         
         let alert = UIAlertController(title: "Add New Todey Item", message: "" , preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) { action in
             //            what will once the user clicks the Add item button on our alert
             
+            guard let title = textField.text else { return }
+            
             let newItem = Item(context: self.context)
-            newItem.title = textfield.text!
+            newItem.title = title
             newItem.done = false
             self.itemArray.append(newItem)
             self.saveItems()
             
             //            saving using uderDefaults
             //            self.defaults.set(self.itemArray, forKey: "TodolistArray")
-            self.tableView.reloadData()
+            
         }
+        let cancel = UIAlertAction(title: "Cancel", style: .destructive, handler: .none)
         
         alert.addTextField { alertTextField in
             alertTextField.placeholder = "Create new item"
-            textfield = alertTextField
+            textField = alertTextField
         }
         alert.addAction(action)
+        alert.addAction(cancel)
         present(alert, animated: true, completion: nil)
     }
     
@@ -148,6 +152,8 @@ class TodoListViewController: UITableViewController {
             print("Error saving context \(error)")
             //            print("Error encoding item array, \(error.localizedDescription)")
         }
+        self.tableView.reloadData()
+
     }
     
     func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
