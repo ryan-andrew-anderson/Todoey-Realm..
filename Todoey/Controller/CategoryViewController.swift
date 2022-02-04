@@ -76,13 +76,6 @@ class CategoryViewController: UITableViewController {
         return categoryArray.count
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.description == "goToItems" {
-            self.performSegue(withIdentifier: "goToItems", sender: self)
-        }
-    }
-    
     //MARK: - TableView Delegate Methods
     // leave blank for now
     
@@ -100,11 +93,20 @@ class CategoryViewController: UITableViewController {
         self.performSegue(withIdentifier: "goToItems", sender: self)
     }
     
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        let vc = segue.destination as! TodoListViewController
+        
+        if let indexPath = tableView.indexPathForSelectedRow {
+            vc.selectedCategory = categoryArray[indexPath.row]
+        }
+    }
+    
     //MARK: - Data Manipulation Methods
     //    Save data and load data
     
     func loadCategories(with request: NSFetchRequest<Category> = Category.fetchRequest()) {
-        
+
         do {
             categoryArray = try context.fetch(request)
             
