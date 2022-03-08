@@ -18,7 +18,7 @@ class CategoryViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-                loadCategories()
+        loadCategories()
         
     }
     
@@ -34,7 +34,6 @@ class CategoryViewController: UITableViewController {
             
             let newCategory = Category()
             newCategory.name = name
-//            self.categoryArray.append(newCategory) // Not needed to be used since realmSwit monitors for changes
             self.save(category: newCategory)
         }
         
@@ -59,7 +58,7 @@ class CategoryViewController: UITableViewController {
             cell.categoryLabel.text = "No Category, Input Data"
             return cell
         }
-            
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! CategoryTableViewCell
         cell.categoryLabel.text = category.name
         
@@ -73,8 +72,6 @@ class CategoryViewController: UITableViewController {
     }
     
     //MARK: - TableView Delegate Methods
-    // leave blank for now
-    
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
@@ -87,6 +84,7 @@ class CategoryViewController: UITableViewController {
             //            }
             //            categoryArray.remove(at: indexPath.row)
             //            save()
+            print("Delete", categoryArray![indexPath.row].name)
         }
     }
     
@@ -99,20 +97,20 @@ class CategoryViewController: UITableViewController {
         
         let vc = segue.destination as! TodoListViewController
         
-        if let indexPath = tableView.indexPathForSelectedRow, let categories = categoryArray?[indexPath.row] {
+        if let indexPath = tableView.indexPathForSelectedRow,
+           let categories = categoryArray?[indexPath.row] {
             
             vc.selectedCategory = categories
         }
     }
     
     //MARK: - Data Manipulation Methods
-    //    Save data and load data
     
-        func loadCategories() {
-            
-            categoryArray = realm.objects(Category.self)
-            self.tableView.reloadData()
-        }
+    func loadCategories() {
+        
+        categoryArray = realm.objects(Category.self)
+        self.tableView.reloadData()
+    }
     
     func save(category: Category) {
         

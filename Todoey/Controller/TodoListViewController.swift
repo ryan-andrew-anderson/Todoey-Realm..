@@ -16,22 +16,19 @@ class TodoListViewController: UITableViewController {
     
     let realm = try! Realm()
     
-    var todoItems : Results<Item>?
-    var selectedCategory : Category? {
+    var todoItems: Results<Item>?
+    var selectedCategory: Category? {
         
         didSet{
-//            loadItems()
+            loadItems()
         }
     }
-    
-//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        loadItems()
+        loadItems()
         searchBar.delegate = self
-
     }
     
     //MARK: - TableView Datasource Methods
@@ -75,14 +72,14 @@ class TodoListViewController: UITableViewController {
         //        todoItems.remove(at: indexPath.row)
         //        context.delete(todoItems[indexPath.row])
         tableView.deselectRow(at: indexPath, animated: true)
-//        save()
+        //        save()
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
             
-//            context.delete(todoItems[indexPath.row])
-//            todoItems.remove(at: indexPath.row)
+            //            context.delete(todoItems[indexPath.row])
+            //            todoItems.remove(at: indexPath.row)
             tableView.reloadData()
         }
     }
@@ -95,7 +92,6 @@ class TodoListViewController: UITableViewController {
         
         let alert = UIAlertController(title: "Add New Todey Item", message: "" , preferredStyle: .alert)
         let action = UIAlertAction(title: "Add Item", style: .default) { action in
-            //            what will once the user clicks the Add item button on our alert
             
             guard let title = textField.text else { return }
             self.save(title: title)
@@ -122,6 +118,7 @@ class TodoListViewController: UITableViewController {
                 let newItem = Item()
                 newItem.title = title
                 realm.add(newItem)
+                selectedCategory?.items.append(newItem)
             })
         } catch {
             print("Error saving context \(error)")
@@ -131,6 +128,7 @@ class TodoListViewController: UITableViewController {
     }
     
     func loadItems() {
+        
         todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
         tableView.reloadData()
     }
@@ -142,19 +140,19 @@ extension TodoListViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-//        let request : NSFetchRequest<Item> = Item.fetchRequest()
-//
-//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//
-//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-//
-//        loadItems(with: request, predicate: predicate)
+        //        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        //
+        //        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        //
+        //        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
+        //
+        //        loadItems(with: request, predicate: predicate)
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         if searchBar.text?.count == 0 {
-//            loadItems()
-             
+            loadItems()
+            
             DispatchQueue.main.async {
                 searchBar.resignFirstResponder()
             }
