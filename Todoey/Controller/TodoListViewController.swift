@@ -78,14 +78,19 @@ class TodoListViewController: UITableViewController {
         }
         
         tableView.deselectRow(at: indexPath, animated: true)
-//        save(title: <#String#>)
+        tableView.reloadData()
     }
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
+        if editingStyle == .delete, let item = todoItems?[indexPath.row] {
+            do {
+                try realm.write {
+                    realm.delete(item)
+                }
+            } catch {
+                print("Error saving deleting item", error)
+            }
             
-            //            context.delete(todoItems[indexPath.row])
-            //            todoItems.remove(at: indexPath.row)
             tableView.reloadData()
         }
     }
@@ -123,6 +128,7 @@ class TodoListViewController: UITableViewController {
             try realm.write({
                 let newItem = Item()
                 newItem.title = title
+                newItem.dateCreated = Date()
                 realm.add(newItem)
                 selectedCategory?.items.append(newItem)
             })
@@ -135,27 +141,24 @@ class TodoListViewController: UITableViewController {
     
     func loadItems() {
         
-        todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true)
+        todoItems = selectedCategory?.items.sorted(byKeyPath: "title", ascending: true) //"dateCreated"
         tableView.reloadData()
     }
     
 }
 
 //MARK: - SearchBar Methods
+
 extension TodoListViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         
-        //        let request : NSFetchRequest<Item> = Item.fetchRequest()
-        //
-        //        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-        //
-        //        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-        //
-        //        loadItems(with: request, predicate: predicate)
+        todoItems = todoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        tableView.reloadData()
     }
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        
         if searchBar.text?.count == 0 {
             loadItems()
             

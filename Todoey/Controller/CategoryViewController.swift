@@ -14,7 +14,7 @@ class CategoryViewController: UITableViewController {
     var categoryArray: Results<Category>?
     
     let realm = try! Realm()
-//    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    //    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -75,16 +75,14 @@ class CategoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         
-        if editingStyle == .delete {
-            //            context.delete(categoryArray[indexPath.row])
-            //            do{
-            //                try! realm.write({
-            //                    realm.delete()
-            //                })
-            //            }
-            //            categoryArray.remove(at: indexPath.row)
-            //            save()
-            print("Delete", categoryArray![indexPath.row].name)
+        if editingStyle == .delete, let category = categoryArray?[indexPath.row] {
+            do {
+                try realm.write {
+                    realm.delete(category)
+                }
+            }catch {
+                print("Trouble Deleting Category", error)
+            }
         }
     }
     
