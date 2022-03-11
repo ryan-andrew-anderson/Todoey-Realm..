@@ -8,6 +8,7 @@
 
 import UIKit
 import RealmSwift
+import ChameleonFramework
 
 class TodoListViewController: UITableViewController {
     
@@ -42,6 +43,7 @@ class TodoListViewController: UITableViewController {
             var content = cell.defaultContentConfiguration()
             
             content.text = item?.title
+            cell.backgroundColor = UIColor.randomFlat()
             
             cell.accessoryType = item?.done == true ? .checkmark : .none
             

@@ -61,10 +61,10 @@
 		83F706DA2795B9C8000D53AD /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				EB2BE4FD239524DB00FB933B /* TodoListViewController.swift */,
-				83F706D82795B88C000D53AD /* ItemTableViewCell.swift */,
 				831AD84D27A8313C00CBB454 /* CategoryViewController.swift */,
 				831AD84F27AB8ED800CBB454 /* CategoryTableViewCell.swift */,
+				EB2BE4FD239524DB00FB933B /* TodoListViewController.swift */,
+				83F706D82795B88C000D53AD /* ItemTableViewCell.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
