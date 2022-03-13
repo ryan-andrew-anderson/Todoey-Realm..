@@ -36,14 +36,21 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = todoItems?[indexPath.row]
-        
+
         if #available(iOS 14.0, *) {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
             var content = cell.defaultContentConfiguration()
             
             content.text = item?.title
-            cell.backgroundColor = UIColor.randomFlat()
+            
+            
+            if let color = UIColor(hexString: selectedCategory!.color)?.darken(byPercentage: CGFloat(indexPath.row) / CGFloat(todoItems!.count)) {
+                
+                cell.backgroundColor = color
+                content.textProperties.color = ContrastColorOf(color, returnFlat: true)
+                
+            }
             
             cell.accessoryType = item?.done == true ? .checkmark : .none
             
