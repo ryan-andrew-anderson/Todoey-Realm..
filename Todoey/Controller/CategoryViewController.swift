@@ -22,6 +22,14 @@ class CategoryViewController: UITableViewController {
         
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let navBar = navigationController?.navigationBar {
+            tableView.backgroundColor = UIColor.link
+            navBar.backgroundColor = UIColor.link
+            navBar.tintColor = ContrastColorOf(navBar.backgroundColor ?? .black , returnFlat: true)
+        }
+    }
+    
     /// Add New Catrgories
     @IBAction func addButtonPressed(_ sender: UIBarButtonItem) {
         
@@ -54,11 +62,18 @@ class CategoryViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        guard let category = categoryArray?[indexPath.row] else { return UITableViewCell() }
+        guard
+            let category = categoryArray?[indexPath.row]
+                , let categoryColor = UIColor(hexString: category.color)
+        else { return UITableViewCell() }
         
         let cell = tableView.dequeueReusableCell(withIdentifier: "CategoryCell", for: indexPath) as! CategoryTableViewCell
         cell.categoryLabel.text = category.name
-        cell.backgroundColor = UIColor(hexString: category.color)
+        cell.categoryLabel.textColor = ContrastColorOf(categoryColor, returnFlat: true)
+        cell.backgroundColor = categoryColor
+        cell.selectionStyle = .none
+        
+        
         
         return cell
         

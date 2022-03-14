@@ -32,6 +32,22 @@ class TodoListViewController: UITableViewController {
         searchBar.delegate = self
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        if let colorHex = selectedCategory?.color, let navBarColor = UIColor(hexString: colorHex) {
+            title = selectedCategory!.name
+            guard let navBar = navigationController?.navigationBar else { fatalError("Navigation Controller does not exist.") }
+        navBar.backgroundColor = UIColor(hexString: colorHex)
+            navBar.barTintColor = ContrastColorOf(navBarColor, returnFlat: true)
+            navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
+            searchBar.barTintColor = UIColor(hexString: colorHex)?.lighten(byPercentage: 0.5)
+            searchBar.searchTextField.tintColor = .white
+            tableView.backgroundColor = searchBar.barTintColor
+            
+            
+            
+        }
+    }
+    
     //MARK: - TableView Datasource Methods
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
