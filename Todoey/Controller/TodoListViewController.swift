@@ -33,18 +33,34 @@ class TodoListViewController: UITableViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        if let colorHex = selectedCategory?.color, let navBarColor = UIColor(hexString: colorHex) {
+        
+        if let colorHex = selectedCategory?.color,
+           let navBarColor = UIColor(hexString: colorHex) {
+            
+//          UINavigationBar Title Text
             title = selectedCategory!.name
-            guard let navBar = navigationController?.navigationBar else { fatalError("Navigation Controller does not exist.") }
-        navBar.backgroundColor = UIColor(hexString: colorHex)
-            navBar.barTintColor = ContrastColorOf(navBarColor, returnFlat: true)
+            
+            guard
+                let navBar = navigationController?.navigationBar
+            else { fatalError("Navigation Controller does not exist.") }
+            
+//          UINavigation Bar Color
+            navBar.backgroundColor = navBarColor
+            
+//          UINavigation Bar Item(s) Color
+            navBar.tintColor = ContrastColorOf(navBarColor, returnFlat: true)
+            
+//          UINavigation Bar Text Color
             navBar.largeTitleTextAttributes = [NSAttributedString.Key.foregroundColor : ContrastColorOf(navBarColor, returnFlat: true)]
-            searchBar.barTintColor = UIColor(hexString: colorHex)?.lighten(byPercentage: 0.5)
-            searchBar.searchTextField.tintColor = .white
+            
+//          UISearchBar Background Color
+            searchBar.barTintColor = navBarColor.lighten(byPercentage: 0.5)
+            
+//          UISearchBar TextField Color
+            searchBar.searchTextField.backgroundColor = .white
+            
+//          UITableView Background Color
             tableView.backgroundColor = searchBar.barTintColor
-            
-            
-            
         }
     }
     
@@ -52,7 +68,7 @@ class TodoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = todoItems?[indexPath.row]
-
+        
         if #available(iOS 14.0, *) {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
